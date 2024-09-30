@@ -4,7 +4,7 @@ services:
     nginx:
         image: nginx:latest
         volumes:
-            - ./SagaOnline:/var/www
+            - ./:/var/www
             - ./_docker/nginx:/etc/nginx/conf.d
         ports:
             - "49152:80"
@@ -17,7 +17,7 @@ services:
             context: .
             dockerfile: Dockerfile
         volumes:
-            - ./SagaOnline:/var/www
+            - ./:/var/www
             - /var/www/vendor
             - /var/www/node_modules
         depends_on:
