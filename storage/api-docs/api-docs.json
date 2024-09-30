@@ -1,0 +1,34 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API для приложения SagaOnline",
+        "description": "Документация для REST API",
+        "contact": {
+            "email": "support@sagaonline.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://my-default-host.com",
+            "description": "Основной API сервер"
+        }
+    ],
+    "paths": {
+        "/api/users": {
+            "get": {
+                "summary": "Получить список пользователей",
+                "operationId": "93b0e8710275f7a4f43fe6f95b2e10d6",
+                "responses": {
+                    "200": {
+                        "description": "Успешный запрос"
+                    }
+                }
+            }
+        }
+    }
+}

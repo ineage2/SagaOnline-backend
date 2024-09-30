@@ -13,8 +13,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-install pdo_mysql bcmath gd zip
 
-RUN pecl install redis \
-    && docker-php-ext-enable redis
+RUN pecl install redis
 
 COPY ./_docker/ini/php.ini /usr/local/etc/php/conf.d/php.ini
 
