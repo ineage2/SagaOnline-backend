@@ -1,0 +1,67 @@
+version: '3.2'
+
+services:
+    nginx:
+        image: nginx:latest
+        volumes:
+            - ./:/var/www
+            - ./_docker/nginx:/etc/nginx/conf.d
+        ports:
+            - "49152:80"
+        depends_on:
+            - app
+        container_name: webServer-nginx
+
+    app:
+        build:
+            context: .
+            dockerfile: _docker/app/Dockerfile
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - db
+            - cache
+        container_name: SagaOnline
+
+    db:
+        image: mysql:8.0
+        restart: always
+        volumes:
+            - ./tmp/db:/var/lib/mysql
+        environment:
+            MYSQL_DATABASE: SagaOnline
+            MYSQL_ROOT_PASSWORD: root
+        ports:
+            - "49153:3306"
+        command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+        container_name: Database-MySQL
+
+    cache:
+        image: redis:latest
+        restart: always
+        volumes:
+            - ./tmp/cache:/var/lib/redis
+        ports:
+            - "49154:6379"
+        container_name: Cache-Redis
+
+    cacheAdminPanel:
+        image: erikdubbelboer/phpredisadmin
+        ports:
+            - "49155:80"
+        environment:
+            REDIS_1_HOST: cache
+            REDIS_1_PORT: 6379
+            REDIS_1_AUTH: null
+        depends_on:
+            - cache
+        container_name: Cache-Panel
+
+    dbAdminPanel:
+        image: phpmyadmin/phpmyadmin
+        container_name: Database-Panel
+        ports:
+            - "49157:80"
+        environment:
+            PMA_HOST: db
+            PMA_PORT: 3306
