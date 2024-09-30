@@ -15,9 +15,11 @@ services:
     app:
         build:
             context: .
-            dockerfile: _docker/app/Dockerfile
+            dockerfile: Dockerfile
         volumes:
             - ./:/var/www
+            - /var/www/vendor
+            - /var/www/node_modules
         depends_on:
             - db
             - cache

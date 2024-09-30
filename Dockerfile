@@ -5,11 +5,16 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     libpng-dev \
     libzip-dev \
-    zip unzip \
-    git && \
-    docker-php-ext-install pdo_mysql bcmath gd zip && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    zip \
+    unzip \
+    git \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN docker-php-ext-install pdo_mysql bcmath gd zip
+
+RUN pecl install redis \
+    && docker-php-ext-enable redis
 
 COPY ./_docker/ini/php.ini /usr/local/etc/php/conf.d/php.ini
 
@@ -19,11 +24,3 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
     --install-dir=/usr/local/bin
 
 WORKDIR /var/www
-
-COPY . .
-
-RUN composer install
-
-RUN cp .env.example .env
-
-RUN php artisan key:generate
