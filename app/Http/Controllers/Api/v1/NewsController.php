@@ -6,8 +6,33 @@ use App\Http\Controllers\Controller;
 
 class NewsController extends Controller
 {
-    public function getNews(): int
+    public function index()
     {
-        return 1;
+
+    }
+
+    public function show($id)
+    {
+
+    }
+
+    public function store()
+    {
+
+    }
+
+    public function update()
+    {
+
+    }
+
+    public function destroy()
+    {
+
+    }
+
+    public function searchByTag()
+    {
+
     }
 }

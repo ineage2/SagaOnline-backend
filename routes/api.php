@@ -24,8 +24,10 @@ Route::prefix('news')->group(function () {
     // Create News
     Route::post('', [NewsController::class, 'store']);
     // Update News
-    Route::put('{id}', [NewsController::class, 'update']);
-    Route::patch('{id}', [NewsController::class, 'update']);
+    Route::put('{id}', [NewsController::class, 'update']); // full change
+    Route::patch('{id}', [NewsController::class, 'update']); // partial change
     // Delete News
     Route::delete('{id}', [NewsController::class, 'destroy']);
+    // Search News by tag
+    Route::get('tag/{tag}', [NewsController::class, 'searchByTag']);
 });
