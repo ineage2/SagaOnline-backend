@@ -6,7 +6,8 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
 use App\Models\Language;
-
+use App\Models\News;
+use App\Models\Tag;
 class NewsSeeder extends Seeder
 {
     /**
@@ -17,12 +18,16 @@ class NewsSeeder extends Seeder
         $faker = Faker::create();
 
         $languages = Language::all();
+        $tagIds = Tag::pluck('id');
 
         for ($i = 0; $i < 50; $i++) {
-            $news_id = DB::table('news')->insertGetId([
-                'created_at' => $faker->dateTimeBetween('-3 months', 'now'),
-                'updated_at' => $faker->dateTimeBetween('-3 months', 'now'),
+            $news = News::create([
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
+
+            $randomTagId = $tagIds->random();
+            $news->tags()->attach($randomTagId);
 
             foreach ($languages as $language) {
                 $faker = Faker::create($language->iso);
@@ -30,20 +35,19 @@ class NewsSeeder extends Seeder
                 $imagePatterns = [
                     'https://picsum.photos/500/250?random=1',
                     'https://picsum.photos/500/250?random=2',
-                    'https://picsum.photos/500/250?random=3',
                 ];
 
                 $imageUrl = $imagePatterns[array_rand($imagePatterns)];
 
                 DB::table('news_translations')->insert([
-                    'news_id' => $news_id,
+                    'news_id' =>  $news->id,
                     'language_id' => $language->id,
                     'title' => $faker->realText(50),
                     'description' => $faker->realText(200),
                     'image_url' => $imageUrl,
                     'content' => $faker->realText(2000),
-                    'created_at' => $faker->dateTimeBetween('-3 months', 'now'),
-                    'updated_at' => $faker->dateTimeBetween('-3 months', 'now'),
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
             }
         }

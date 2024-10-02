@@ -20,9 +20,4 @@ class LanguageSeeder extends Seeder
             ['code' => 'zh', 'name' => '中文', 'iso' => 'zh_TW', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
-
-    public function down(): void
-    {
-        DB::table('languages')->whereIn('code', ['en', 'ja', 'ru', 'zh'])->delete();
-    }
 }

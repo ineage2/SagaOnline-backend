@@ -20,6 +20,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tag_id')->constrained('tags')->onDelete('cascade');
             $table->foreignId('language_id',)->constrained('languages')->onDelete('cascade');
+            $table->string('title', 20)->unique();
             $table->text('description')->nullable();
             $table->timestamps();
             $table->unique(['tag_id', 'language_id']);
@@ -32,5 +33,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('tags');
+        Schema::dropIfExists('tags_translations');
     }
 };
