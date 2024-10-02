@@ -14,10 +14,10 @@ class LanguageSeeder extends Seeder
     public function run(): void
     {
         DB::table('languages')->insert([
-            ['code' => 'en', 'name' => 'English', 'iso' => 'en-US', 'created_at' => now(), 'updated_at' => now()],
-            ['code' => 'ja', 'name' => '日本語', 'iso' => 'ja-JP', 'created_at' => now(), 'updated_at' => now()],
-            ['code' => 'ru', 'name' => 'Русский', 'iso' => 'ru-RU', 'created_at' => now(), 'updated_at' => now()],
-            ['code' => 'zh', 'name' => '中文', 'iso' => 'zh-CN', 'created_at' => now(), 'updated_at' => now()],
+            ['code' => 'en', 'name' => 'English', 'iso' => 'en_US', 'created_at' => now(), 'updated_at' => now()],
+            ['code' => 'ja', 'name' => '日本語', 'iso' => 'ja_JP', 'created_at' => now(), 'updated_at' => now()],
+            ['code' => 'ru', 'name' => 'Русский', 'iso' => 'ru_RU', 'created_at' => now(), 'updated_at' => now()],
+            ['code' => 'zh', 'name' => '中文', 'iso' => 'zh_TW', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 
