@@ -21,9 +21,4 @@ class AdminSeeder extends Seeder
             'password' => Hash::make('password'),
         ]);
     }
-
-    public function down(): void
-    {
-        DB::table('users')->whereIn('name', 'admin')->delete();
-    }
 }

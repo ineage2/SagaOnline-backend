@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('image_url')->nullable();
             $table->longText('content')->nullable();
             $table->timestamps();
-            $table->unique(['language_id', 'news_id']);
+            $table->unique(['news_id', 'language_id']);
         });
     }
 

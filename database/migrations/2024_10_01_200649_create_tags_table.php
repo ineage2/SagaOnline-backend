@@ -13,8 +13,16 @@ return new class extends Migration
     {
         Schema::create('tags', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
             $table->timestamps();
+        });
+
+        Schema::create('tags_translations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('tag_id')->constrained('tags')->onDelete('cascade');
+            $table->foreignId('language_id',)->constrained('languages')->onDelete('cascade');
+            $table->text('description')->nullable();
+            $table->timestamps();
+            $table->unique(['tag_id', 'language_id']);
         });
     }
 

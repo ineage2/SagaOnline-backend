@@ -21,9 +21,4 @@ class CreateTagsSeeder extends Seeder
             ['name' => 'Events', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
-
-    public function down(): void
-    {
-        DB::table('tags')->whereIn('name', ['Sales', 'Updates', 'Live', 'Classic', 'Events'])->delete();
-    }
 }
