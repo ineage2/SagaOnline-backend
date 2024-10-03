@@ -45,7 +45,7 @@ services:
             - ./tmp/cache:/var/lib/redis
         ports:
             - "49154:6379"
-        container_name: Cache-Redis
+        container_name: CacheTrait-Redis
 
     cacheAdminPanel:
         image: erikdubbelboer/phpredisadmin
@@ -57,7 +57,7 @@ services:
             REDIS_1_AUTH: null
         depends_on:
             - cache
-        container_name: Cache-Panel
+        container_name: CacheTrait-Panel
 
     dbAdminPanel:
         image: phpmyadmin/phpmyadmin

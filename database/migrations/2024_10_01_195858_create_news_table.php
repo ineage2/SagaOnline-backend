@@ -20,12 +20,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('news_id')->constrained('news')->onDelete('cascade');
             $table->foreignId('language_id',)->constrained('languages')->onDelete('cascade');
-            $table->string('title')->nullable();
+            $table->string('title', 255)->nullable();
             $table->text('description')->nullable();
             $table->string('image_url')->nullable();
             $table->longText('content')->nullable();
             $table->timestamps();
             $table->unique(['news_id', 'language_id']);
+            $table->index('news_id');
+            $table->index('language_id');
         });
     }
 
@@ -34,7 +36,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('news');
         Schema::dropIfExists('news_translations');
+        Schema::dropIfExists('news');
     }
 };
