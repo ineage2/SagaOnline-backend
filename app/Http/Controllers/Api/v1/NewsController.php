@@ -5,12 +5,10 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Models\News;
 use App\Models\Language;
-
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Traits\CacheTrait;
 use App\Traits\ExecutionTimeLoggerTrait;
-use Illuminate\Support\Facades\Log;
 
 class NewsController extends Controller
 {
@@ -78,7 +76,7 @@ class NewsController extends Controller
                             $data['created_at'] = $item->created_at;
                             break;
                         case 'updated_at':
-                            $data['updated_at'] = $item->updated_at;
+                            $data['updated_at'] = $item->created_at;
                             break;
                     }
                 }

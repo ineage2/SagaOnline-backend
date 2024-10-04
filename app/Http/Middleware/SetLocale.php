@@ -19,7 +19,8 @@ class SetLocale
     {
         $locale = $request->header('Accept-Language', 'en');
         App::setLocale($locale);
-        Log::info('Current Locale: ' . App::getLocale());
+        // Log::info('Current Locale: ' . App::getLocale());
+
         return $next($request);
     }
 }

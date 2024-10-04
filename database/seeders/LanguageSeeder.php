@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -13,11 +13,13 @@ class LanguageSeeder extends Seeder
      */
     public function run(): void
     {
+        $currentTime = Carbon::now();
+
         DB::table('languages')->insert([
-            ['code' => 'en', 'name' => 'English', 'iso' => 'en_US', 'created_at' => now(), 'updated_at' => now()],
-            ['code' => 'ja', 'name' => '日本語', 'iso' => 'ja_JP', 'created_at' => now(), 'updated_at' => now()],
-            ['code' => 'ru', 'name' => 'Русский', 'iso' => 'ru_RU', 'created_at' => now(), 'updated_at' => now()],
-            ['code' => 'zh', 'name' => '中文', 'iso' => 'zh_TW', 'created_at' => now(), 'updated_at' => now()],
+            ['code' => 'en', 'name' => 'English', 'iso' => 'en_US', 'created_at' => $currentTime, 'updated_at' => $currentTime],
+            ['code' => 'ja', 'name' => '日本語', 'iso' => 'ja_JP', 'created_at' => $currentTime, 'updated_at' => $currentTime],
+            ['code' => 'ru', 'name' => 'Русский', 'iso' => 'ru_RU', 'created_at' => $currentTime, 'updated_at' => $currentTime],
+            ['code' => 'zh', 'name' => '中文', 'iso' => 'zh_TW', 'created_at' => $currentTime, 'updated_at' => $currentTime],
         ]);
     }
 }

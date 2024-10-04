@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
 use App\Models\Language;
+use Carbon\Carbon;
 
 class CreateTagsSeeder extends Seeder
 {
@@ -16,13 +16,14 @@ class CreateTagsSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create();
-
         $languages = Language::all();
 
         for ($i = 0; $i < 10; $i++) {
+            $currentTime = Carbon::now();
+
             $tag_id = DB::table('tags')->insertGetId([
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => $currentTime,
+                'updated_at' => $currentTime,
             ]);
 
             foreach ($languages as $language) {
@@ -31,10 +32,10 @@ class CreateTagsSeeder extends Seeder
                 DB::table('tags_translations')->insert([
                     'tag_id' => $tag_id,
                     'language_id' => $language->id,
-                    'title' => $faker->unique()->realText(20),
+                    'title' => $faker->unique()->realText(30),
                     'description' => $faker->realText($maxNbChars = 100),
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'created_at' => $currentTime,
+                    'updated_at' => $currentTime,
                 ]);
             }
         };
