@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,7 +12,9 @@ return new class extends Migration
     {
         Schema::create('news', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tag_id')->constrained('tags')->onDelete('cascade');
             $table->timestamps();
+            $table->index('tag_id');
         });
 
         Schema::create('news_translations', function (Blueprint $table) {
@@ -26,8 +27,7 @@ return new class extends Migration
             $table->longText('content')->nullable();
             $table->timestamps();
             $table->unique(['news_id', 'language_id']);
-            $table->index('news_id');
-            $table->index('language_id');
+            $table->index(['news_id', 'language_id']);
         });
     }
 

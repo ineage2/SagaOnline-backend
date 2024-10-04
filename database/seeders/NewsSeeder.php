@@ -25,12 +25,10 @@ class NewsSeeder extends Seeder
             $currentTime = Carbon::now();
 
             $news = News::create([
+                'tag_id' => $tagIds->random(),
                 'created_at' => $currentTime,
                 'updated_at' => $currentTime,
             ]);
-
-            $randomTagId = $tagIds->random();
-            $news->tags()->attach($randomTagId);
 
             foreach ($languages as $language) {
                 $faker = Faker::create($language->iso);

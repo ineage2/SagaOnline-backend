@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\News;
@@ -14,7 +14,7 @@ class NewsController extends Controller
 {
     use CacheTrait, ExecutionTimeLoggerTrait;
 
-    private const ALLOWED_FIELDS = ['id', 'news_id', 'language_id', 'title', 'description', 'image_url', 'content', 'created_at', 'updated_at'];
+    private const ALLOWED_FIELDS = ['id', 'tags', 'news_id', 'language_id', 'title', 'description', 'image_url', 'content', 'created_at', 'updated_at'];
 
     public function index(Request $request): JsonResponse
     {
@@ -41,6 +41,10 @@ class NewsController extends Controller
             $news = News::with(['translations' => function ($query) use ($language) {
                 $query->where('language_id', $language->id)
                     ->select(self::ALLOWED_FIELDS);
+            }, 'tags' => function ($query) use ($language) {
+                $query->with(['translations' => function ($q) use ($language) {
+                    $q->where('language_id', $language->id);
+                }]);
             }])
                 ->select(['id', 'created_at', 'updated_at'])
                 ->paginate($perPage);
@@ -53,6 +57,14 @@ class NewsController extends Controller
                     switch ($field) {
                         case 'id':
                             $data['id'] = $item->id;
+                            break;
+                        case 'tags':
+                            $data['tags'] = $item->tags->map(function ($tag) use ($language) {
+                                return [
+                                    'id' => $tag->id,
+                                    'title' => $tag->translations->where('language_id', $language->id)->first()->title,
+                                ];
+                            });
                             break;
                         case 'news_id':
                             $data['news_id'] = $translation->news_id;

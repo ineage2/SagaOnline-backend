@@ -1,7 +1,7 @@
 <?php
 
 // routes/api.php Laravel routes/api.php
-use App\Http\Controllers\Api\v1\NewsController;
+use App\Http\Controllers\Api\V1\NewsController;
 use Illuminate\Support\Facades\Route;
 
 /*
