@@ -9,5 +9,7 @@ class Language extends Model
 {
     use HasFactory;
 
+    protected $table = 'languages';
+
     protected $fillable = ['code', 'name', 'iso'];
 }

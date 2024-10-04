@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class NewsTranslation extends Model
+class TagTranslation extends Model
 {
     use HasFactory;
 
-    protected $table = 'news_translations';
+    protected $table = 'tags_translations';
 
     public function language(): BelongsTo
     {

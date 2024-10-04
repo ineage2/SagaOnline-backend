@@ -14,7 +14,23 @@ class NewsController extends Controller
 {
     use CacheTrait, ExecutionTimeLoggerTrait;
 
-    private const ALLOWED_FIELDS = ['id', 'tags', 'news_id', 'language_id', 'title', 'description', 'image_url', 'content', 'created_at', 'updated_at'];
+    private const ALLOWED_FIELDS = [
+        'id',
+        'news_id',
+        'language_id',
+        'title',
+        'tags',
+        'tags.id',
+        'tags.title',
+        'tags.description',
+        'tags.created_at',
+        'tags.updated_at',
+        'description',
+        'image_url',
+        'content',
+        'created_at',
+        'updated_at'
+    ];
 
     public function index(Request $request): JsonResponse
     {
@@ -40,11 +56,10 @@ class NewsController extends Controller
         if (!$news) {
             $news = News::with(['translations' => function ($query) use ($language) {
                 $query->where('language_id', $language->id)
-                    ->select(self::ALLOWED_FIELDS);
-            }, 'tags' => function ($query) use ($language) {
-                $query->with(['translations' => function ($q) use ($language) {
-                    $q->where('language_id', $language->id);
-                }]);
+                    ->select(['news_id', 'language_id', 'title', 'description', 'image_url', 'content']);
+            }, 'tags.translations' => function ($query) use ($language) {
+                $query->where('language_id', $language->id)
+                    ->select(['tag_id', 'language_id', 'title', 'description']);
             }])
                 ->select(['id', 'created_at', 'updated_at'])
                 ->paginate($perPage);
@@ -58,41 +73,59 @@ class NewsController extends Controller
                         case 'id':
                             $data['id'] = $item->id;
                             break;
-                        case 'tags':
-                            $data['tags'] = $item->tags->map(function ($tag) use ($language) {
-                                return [
-                                    'id' => $tag->id,
-                                    'title' => $tag->translations->where('language_id', $language->id)->first()->title,
-                                ];
-                            });
-                            break;
                         case 'news_id':
-                            $data['news_id'] = $translation->news_id;
+                            $data['news_id'] = $translation->news_id ?? null;
                             break;
                         case 'language_id':
-                            $data['language_id'] = $translation->language_id;
+                            $data['language_id'] = $translation->language_id ?? null;
                             break;
                         case 'title':
-                            $data['title'] = $translation->title;
+                            $data['title'] = $translation->title ?? null;
                             break;
                         case 'description':
-                            $data['description'] = $translation->description;
+                            $data['description'] = $translation->description ?? null;
                             break;
                         case 'image_url':
-                            $data['image_url'] = $translation->image_url;
+                            $data['image_url'] = $translation->image_url ?? null;
                             break;
                         case 'content':
-                            $data['content'] = $translation->content;
+                            $data['content'] = $translation->content ?? null;
                             break;
                         case 'created_at':
                             $data['created_at'] = $item->created_at;
                             break;
                         case 'updated_at':
-                            $data['updated_at'] = $item->created_at;
+                            $data['updated_at'] = $item->updated_at;
+                            break;
+                        case 'tags':
+                            $data['tags'] = $item->tags->map(function ($tag) use ($language, $fields) {
+                                $translation = $tag->translations->where('language_id', $language->id)->first();
+                                $tagData = [];
+
+                                foreach ($fields as $field) {
+                                    switch ($field) {
+                                        case 'tags.id':
+                                            $tagData['id'] = $tag->id;
+                                            break;
+                                        case 'tags.title':
+                                            $tagData['title'] = $translation ? $translation->title : null;
+                                            break;
+                                        case 'tags.description':
+                                            $tagData['description'] = $translation ? $translation->description : null;
+                                            break;
+                                        case 'tags.created_at':
+                                            $tagData['created_at'] = $tag->created_at;
+                                            break;
+                                        case 'tags.updated_at':
+                                            $tagData['updated_at'] = $tag->updated_at;
+                                            break;
+                                    }
+                                }
+                                return $tagData;
+                            });
                             break;
                     }
                 }
-
                 return $data;
             });
 
@@ -101,7 +134,6 @@ class NewsController extends Controller
 
         $this->logExecutionTime('NewsController::index');
         return response()->json(['status' => 'Success', 'message' => $news], 200);
-
     }
 
     public function show($id)
