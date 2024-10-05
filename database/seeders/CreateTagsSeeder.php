@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
 use App\Models\Language;
 use Carbon\Carbon;
 
@@ -12,40 +11,65 @@ class CreateTagsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     * @throws \Exception
      */
     public function run(): void
     {
-        $faker = Faker::create();
         $languages = Language::all();
+        $tags = [
+            'events' => [
+                'en' => ['title' => 'Events', 'description' => 'Category for events and activities.'],
+                'ja' => ['title' => 'イベント', 'description' => 'イベントや活動のカテゴリ。'],
+                'ru' => ['title' => 'События', 'description' => 'Категория для событий и мероприятий.'],
+                'zh' => ['title' => '事件', 'description' => '活动和事件的类别。'],
+            ],
+            'news' => [
+                'en' => ['title' => 'News', 'description' => 'General category for news.'],
+                'ja' => ['title' => 'ニュース', 'description' => 'ニュースの一般的なカテゴリ。'],
+                'ru' => ['title' => 'Новости', 'description' => 'Общая категория для новостей.'],
+                'zh' => ['title' => '新闻', 'description' => '新闻的常规类别。'],
+            ],
+        ];
 
-        for ($i = 0; $i < 10; $i++) {
+        DB::beginTransaction();
+
+        try {
             $currentTime = Carbon::now();
+            $insertedTags = [];
 
-            $tag_id = DB::table('tags')->insertGetId([
-                'created_at' => $currentTime,
-                'updated_at' => $currentTime,
-            ]);
-
-            foreach ($languages as $language) {
-                $faker = Faker::create($language->iso);
-
-                DB::table('tags_translations')->insert([
-                    'tag_id' => $tag_id,
-                    'language_id' => $language->id,
-                    'title' => $faker->unique()->realText(30),
-                    'description' => $faker->realText($maxNbChars = 100),
+            foreach ($tags as $tag) {
+                $insertedTags[] = [
                     'created_at' => $currentTime,
                     'updated_at' => $currentTime,
-                ]);
+                ];
             }
-        };
 
-        //DB::table('tags')->insert([
-        //['name' => 'Sales', 'created_at' => now(), 'updated_at' => now()],
-        //['name' => 'Updates', 'created_at' => now(), 'updated_at' => now()],
-        //['name' => 'Live', 'created_at' => now(), 'updated_at' => now()],
-        //['name' => 'Classic', 'created_at' => now(), 'updated_at' => now()],
-        //['name' => 'Events', 'created_at' => now(), 'updated_at' => now()],
-        //);
+            DB::table('tags')->insert($insertedTags);
+
+            $tagIds = DB::table('tags')->pluck('id')->toArray();
+            $translationsData = [];
+
+            foreach ($languages as $language) {
+                foreach ($tags as $key => $tag) {
+                    if (isset($tag[$language->code])) {
+                        $translationsData[] = [
+                            'tag_id' => $tagIds[array_search($key, array_keys($tags))],
+                            'language_id' => $language->id,
+                            'title' => $tag[$language->code]['title'],
+                            'description' => $tag[$language->code]['description'],
+                            'created_at' => $currentTime,
+                            'updated_at' => $currentTime,
+                        ];
+                    }
+                }
+            }
+
+            DB::table('tags_translations')->insert($translationsData);
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 }
